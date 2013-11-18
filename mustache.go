@@ -368,7 +368,7 @@ func call(v reflect.Value, method reflect.Method) reflect.Value {
 
 // Evaluate interfaces and pointers looking for a value that can look up the name, via a
 // struct field, method, or map key, and return the result of the lookup.
-func lookup(contextChain []interface{}, name string) reflect.Value {
+func _lookup(contextChain []interface{}, name string) reflect.Value {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Panic while looking up %q: %s\n", name, r)
@@ -417,6 +417,19 @@ Outer:
 		}
 	}
 	return reflect.Value{}
+}
+
+func lookup(contextChain []interface{}, name string) (c reflect.Value) {
+	parts := strings.Split(name, ".")
+	count := len(parts) - 1
+
+	for i, part := range parts {
+		c = _lookup(contextChain, part)
+		if i < count {
+			contextChain = []interface{}{c}
+		}
+	}
+	return
 }
 
 func isEmpty(v reflect.Value) bool {
