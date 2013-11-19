@@ -23,6 +23,14 @@ type User struct {
 	Id   int64
 }
 
+type Product struct {
+	MyUser User
+}
+
+type Product2 struct {
+	MyUser *User
+}
+
 type settings struct {
 	Allow bool
 }
@@ -130,6 +138,14 @@ var tests = []Test{
 	{`"{{#list}}({{.}}){{/list}}"`, map[string]interface{}{"list": []string{"a", "b", "c", "d", "e"}}, "\"(a)(b)(c)(d)(e)\""},
 	{`"{{#list}}({{.}}){{/list}}"`, map[string]interface{}{"list": []int{1, 2, 3, 4, 5}}, "\"(1)(2)(3)(4)(5)\""},
 	{`"{{#list}}({{.}}){{/list}}"`, map[string]interface{}{"list": []float64{1.10, 2.20, 3.30, 4.40, 5.50}}, "\"(1.1)(2.2)(3.3)(4.4)(5.5)\""},
+
+	// dot notation tests
+	{`{{User.Name}}`, map[string]interface{}{"User": User{"Mike", 1}}, "Mike"},
+	{`{{User.Name}}`, map[string]interface{}{"User": &User{"Mike", 1}}, "Mike"},
+	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": Product{User{"Mike", 1}}}, "Mike"},
+	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": &Product{User{"Mike", 1}}}, "Mike"},
+	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": Product2{&User{"Mike", 1}}}, "Mike"},
+	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": &Product2{&User{"Mike", 1}}}, "Mike"},
 
 	//inverted section tests
 	{`{{a}}{{^b}}b{{/b}}{{c}}`, map[string]string{"a": "a", "c": "c"}, "abc"},
