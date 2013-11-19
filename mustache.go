@@ -423,6 +423,32 @@ func renderSection(section *sectionElement, contextChain []interface{}, buf io.W
 	} else if !section.inverted {
 		valueInd := indirect(value)
 		switch val := valueInd; val.Kind() {
+		case reflect.Func:
+			rawBody := ""
+
+			for _, element := range section.elems {
+				switch elem := element.(type) {
+				//todo: must handle sectionElement
+				case *textElement:
+					rawBody += string(elem.text)
+				case *varElement:
+					rawBody += "{{" + elem.name + "}}"
+				}
+			}
+
+			params := []reflect.Value{reflect.ValueOf(rawBody)}
+			//set the elements to a new template; containing the rawBody
+			out := val.Call(params)
+			if len(out) > 0 && out[0].Kind() == reflect.String {
+				tpl, err := ParseString(out[0].String())
+				if err != nil {
+					fmt.Printf("Panic parsing section %s\n", section.name)
+				}
+
+				section.elems = []interface{}{tpl}
+			}
+
+			contexts = append(contexts, context)
 		case reflect.Slice:
 			for i := 0; i < val.Len(); i++ {
 				contexts = append(contexts, val.Index(i))
