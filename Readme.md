@@ -103,10 +103,10 @@ It'll be blank. You either have to use `&Person{"John", "Smith"}`, or call `Name
 
 ## Supported features
 
-* Variables
+* Variables (dot notation)
 * Comments
 * Change delimiter
-* Sections (boolean, enumerable, and inverted)
+* Sections (boolean, enumerable, inverted and lambdas)
 * Partials
 
 
