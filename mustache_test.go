@@ -147,6 +147,14 @@ var tests = []Test{
 	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": Product2{&User{"Mike", 1}}}, "Mike"},
 	{`{{Product.MyUser.Name}}`, map[string]interface{}{"Product": &Product2{&User{"Mike", 1}}}, "Mike"},
 
+	//lambda section tests
+	{`{{#_}}Hello World{{/_}}`, map[string]interface{}{"_": func(msg string) string {
+		return msg
+	}}, "Hello World"},
+	{`{{#_}}Hello {{msg}}{{/_}}`, map[string]interface{}{"_": func(msg string) string {
+		return msg
+	}, "msg": "World"}, "Hello World"},
+
 	//inverted section tests
 	{`{{a}}{{^b}}b{{/b}}{{c}}`, map[string]string{"a": "a", "c": "c"}, "abc"},
 	{`{{a}}{{^b}}b{{/b}}{{c}}`, map[string]interface{}{"a": "a", "b": false, "c": "c"}, "abc"},
