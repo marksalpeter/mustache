@@ -360,6 +360,10 @@ Outer:
 }
 
 func lookup(contextChain []interface{}, name string) (c reflect.Value) {
+	if name == "." {
+		return _lookup(contextChain, name)
+	}
+
 	parts := strings.Split(name, ".")
 	count := len(parts) - 1
 
