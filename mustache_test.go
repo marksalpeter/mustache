@@ -155,8 +155,8 @@ var tests = []Test{
 		return msg
 	}, "msg": "World"}, "Hello World"},
 	{`{{#list}}{{#_}}test {{/_}}{{.}} {{/list}}`, map[string]interface{}{"_": func(msg string) string {
-		return msg
-	}, "list": []int{0, 1}}, "test 0 test 1 "},
+		return (msg + "h")
+	}, "list": []int{0, 1}}, "test h0 test h1 "},
 
 	//inverted section tests
 	{`{{a}}{{^b}}b{{/b}}{{c}}`, map[string]string{"a": "a", "c": "c"}, "abc"},
